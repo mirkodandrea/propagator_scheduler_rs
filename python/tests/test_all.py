@@ -4,14 +4,14 @@ from propagator_scheduler_rs import Scheduler
 def test_scheduler_initialization():
     """Test that a Scheduler can be initialized."""
     scheduler = Scheduler()
-    assert scheduler.len() == 0
+    assert len(scheduler) == 0
 
 def test_push_single_update():
     """Test pushing a single update and retrieving it."""
     scheduler = Scheduler()
     scheduler.push([[1, 2, 3], [4, 5, 6]], 1.0)
     
-    assert scheduler.len() == 1
+    assert len(scheduler) == 1
 
     popped = scheduler.pop()
     assert popped is not None
@@ -25,7 +25,7 @@ def test_push_multiple_updates():
     scheduler.push([[1, 2, 3]], 2.0)
     scheduler.push([[4, 5, 6]], 1.0)
 
-    assert scheduler.len() == 2
+    assert len(scheduler) == 2
 
     popped1 = scheduler.pop()
     assert popped1 is not None
@@ -39,7 +39,7 @@ def test_push_multiple_updates():
     assert time2 == 2.0
     assert updates2 == [[1, 2, 3]]
 
-    assert scheduler.len() == 0
+    assert len(scheduler) == 0
 
 def test_push_all():
     """Test pushing multiple updates at once."""
@@ -51,10 +51,10 @@ def test_push_all():
     ]
     scheduler.push_all(updates)
 
-    assert scheduler.len() == 3
+    assert len(scheduler) == 3
 
     times = []
-    while scheduler.len() > 0:
+    while len(scheduler) > 0:
         time, _ = scheduler.pop()
         times.append(time)
 
@@ -84,4 +84,4 @@ def test_million_adds():
         scheduler.push([[int(random()) for _ in range(3)]], random())
     end_time = time.time_ns()
     
-    assert scheduler.len() == 1000000
+    assert len(scheduler) == 1000000
