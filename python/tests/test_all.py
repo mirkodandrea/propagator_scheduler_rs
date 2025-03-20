@@ -17,7 +17,7 @@ def test_push_single_update():
     assert popped is not None
     time, updates = popped
     assert time == 1.0
-    assert updates == [[[1, 2, 3], [4, 5, 6]]]
+    assert updates == [[1, 2, 3], [4, 5, 6]]
 
 def test_push_multiple_updates():
     """Test pushing multiple updates and popping them in order."""
@@ -31,13 +31,13 @@ def test_push_multiple_updates():
     assert popped1 is not None
     time1, updates1 = popped1
     assert time1 == 1.0
-    assert updates1 == [[[4, 5, 6]]]
+    assert updates1 == [[4, 5, 6]]
 
     popped2 = scheduler.pop()
     assert popped2 is not None
     time2, updates2 = popped2
     assert time2 == 2.0
-    assert updates2 == [[[1, 2, 3]]]
+    assert updates2 == [[1, 2, 3]]
 
     assert scheduler.len() == 0
 
@@ -73,3 +73,15 @@ def test_empty_pop():
     """Test that popping an empty scheduler returns None."""
     scheduler = Scheduler()
     assert scheduler.pop() is None
+
+def test_million_adds():
+    """ Test adding a million updates to the scheduler. """
+    scheduler = Scheduler()
+    from random import random
+    import time
+    start_time = time.time_ns()
+    for _ in range(1000000):
+        scheduler.push([[int(random()) for _ in range(3)]], random())
+    end_time = time.time_ns()
+    
+    assert scheduler.len() == 1000000

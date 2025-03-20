@@ -11,3 +11,4 @@ crate-type = ["cdylib"]
 [dependencies]
 pyo3 = "0.24.0"
 ordered-float = "5.0.0"
+rustc-hash = "2.1.1"
