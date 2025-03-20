@@ -10,6 +10,7 @@ def test_push_single_update():
     """Test pushing a single update and retrieving it."""
     scheduler = Scheduler()
     scheduler.push([[1, 2, 3], [4, 5, 6]], 1.0)
+    scheduler.push([[6, 7, 8]], 1.0)
     
     assert len(scheduler) == 1
 
@@ -17,7 +18,7 @@ def test_push_single_update():
     assert popped is not None
     time, updates = popped
     assert time == 1.0
-    assert updates == [[1, 2, 3], [4, 5, 6]]
+    assert updates == [[1, 2, 3], [4, 5, 6], [6,7,8]]
 
 def test_push_multiple_updates():
     """Test pushing multiple updates and popping them in order."""
@@ -78,10 +79,9 @@ def test_million_adds():
     """ Test adding a million updates to the scheduler. """
     scheduler = Scheduler()
     from random import random
-    import time
-    start_time = time.time_ns()
-    for _ in range(1000000):
-        scheduler.push([[int(random()) for _ in range(3)]], random())
-    end_time = time.time_ns()
     
-    assert len(scheduler) == 1000000
+    for i in range(1000000):
+        scheduler.push([[int(random()) for _ in range(3)]], i%1000)
+    
+    
+    assert len(scheduler) == 1000
