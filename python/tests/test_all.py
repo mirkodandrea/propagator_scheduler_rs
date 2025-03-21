@@ -6,49 +6,13 @@ def test_scheduler_initialization():
     scheduler = Scheduler()
     assert len(scheduler) == 0
 
-def test_push_single_update():
-    """Test pushing a single update and retrieving it."""
-    scheduler = Scheduler()
-    scheduler.push([[1, 2, 3], [4, 5, 6]], 1.0)
-    scheduler.push([[6, 7, 8]], 1.0)
-    
-    assert len(scheduler) == 1
-
-    popped = scheduler.pop()
-    assert popped is not None
-    time, updates = popped
-    assert time == 1.0
-    assert updates == [[1, 2, 3], [4, 5, 6], [6,7,8]]
-
-def test_push_multiple_updates():
-    """Test pushing multiple updates and popping them in order."""
-    scheduler = Scheduler()
-    scheduler.push([[1, 2, 3]], 2.0)
-    scheduler.push([[4, 5, 6]], 1.0)
-
-    assert len(scheduler) == 2
-
-    popped1 = scheduler.pop()
-    assert popped1 is not None
-    time1, updates1 = popped1
-    assert time1 == 1.0
-    assert updates1 == [[4, 5, 6]]
-
-    popped2 = scheduler.pop()
-    assert popped2 is not None
-    time2, updates2 = popped2
-    assert time2 == 2.0
-    assert updates2 == [[1, 2, 3]]
-
-    assert len(scheduler) == 0
-
 def test_push_all():
     """Test pushing multiple updates at once."""
     scheduler = Scheduler()
     updates = [
-        (3.0, [[7, 8, 9]]),
-        (1.0, [[1, 2, 3]]),
-        (2.0, [[4, 5, 6]]),
+        (3.0, [7, 8, 9]),
+        (1.0, [1, 2, 3]),
+        (2.0, [4, 5, 6]),
     ]
     scheduler.push_all(updates)
 
@@ -64,8 +28,12 @@ def test_push_all():
 def test_active():
     """Test retrieving active thread identifiers."""
     scheduler = Scheduler()
-    scheduler.push([[1, 2, 3], [4, 5, 6]], 1.0)
-    scheduler.push([[7, 8, 9]], 2.0)
+    scheduler.push_all([
+        (1.0, [1, 2, 3]),
+        (1.0, [4, 5, 6]),
+        (2.0, [7, 8, 9]),
+    ])
+    
 
     active_threads = scheduler.active()
     assert set(active_threads) == {3, 6, 9}
@@ -81,7 +49,7 @@ def test_million_adds():
     from random import random
     
     for i in range(1000000):
-        scheduler.push([[int(random()) for _ in range(3)]], i%1000)
+        scheduler.push(i%1000, [int(random()) for _ in range(3)])
     
     
     assert len(scheduler) == 1000

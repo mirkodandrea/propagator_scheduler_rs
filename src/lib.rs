@@ -27,20 +27,20 @@ impl Scheduler {
     /// Pushes an update into the scheduler.
     ///
     /// If the time key does not exist, a new entry is created.
-    pub fn push(&mut self, coords: Vec<[usize; 3]>, time: f64) {
+    pub fn push(&mut self, time: f64, coords: [usize; 3]) {
         let time_key = (time * PRECISION as f64) as u32;
         self.list
             .entry(time_key)
             .or_insert_with(Vec::new)
-            .extend(coords);
+            .push(coords);
     }
 
     /// Pushes multiple updates into the scheduler.
     ///
     /// Each update is a tuple where the first element is the time and the second is the coordinate array.
-    pub fn push_all(&mut self, updates: Vec<(f64, Vec<[usize; 3]>)>) {
+    pub fn push_all(&mut self, updates: Vec<(f64, [usize; 3])>) {
         for (time, coords) in updates {
-            self.push(coords, time);
+            self.push(time, coords);
         }
     }
 
